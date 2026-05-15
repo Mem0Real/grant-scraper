@@ -2,6 +2,7 @@ from flask import render_template
 
 from create_app import create_app
 from models import Grant
+from extensions import db
 
 from status import scraping_status
 
@@ -46,12 +47,10 @@ def scrape_now():
         "status": "started"
     }
 
+with app.app_context():
+
+    db.create_all()
+
 if __name__ == "__main__":
-
-    with app.app_context():
-
-        from extensions import db
-
-        db.create_all()
 
     app.run(host="0.0.0.0", port=5000)
