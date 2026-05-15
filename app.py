@@ -15,11 +15,11 @@ def home():
 
     latest = Grant.query.order_by(
         Grant.created_at.desc()
-    ).limit(25)
+    ).limit(25).all()
 
     archive = Grant.query.order_by(
         Grant.created_at.desc()
-    ).offset(25)
+    ).offset(25).all()
 
     return render_template(
         "index.html",
