@@ -117,6 +117,73 @@
 
     </div>
 
+    <!-- STATUS UI -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <h6>Status</h6>
+
+                    {% if scraping.running %}
+
+                        <span class="badge bg-warning">
+                            Scraping in Progress
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-success">
+                            Idle
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <h6>Last Run</h6>
+
+                    <p>
+
+                        {{ scraping.last_run }}
+
+                    </p>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <h6>New Grants Found</h6>
+
+                    <p>
+
+                        {{ scraping.total_found }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SCRAPE BUTTON -->
+     <a
+    href="/scrape"
+    class="btn btn-primary mb-4"
+    >
+
+        Scrape Now
+
+    </a>
+
     <!-- LATEST -->
 
     <div class="d-flex justify-content-between align-items-center">
