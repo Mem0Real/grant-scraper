@@ -11,7 +11,8 @@ SEED_URLS = [
 
     "https://vc4a.com",
     "https://solve.mit.edu",
-    "https://www.gsma.com/mobilefordevelopment/"
+    "https://www.gsma.com/mobilefordevelopment/",
+    "https://linkedin.com"
 ]
 
 def run_scraper():
