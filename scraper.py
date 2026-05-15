@@ -1,4 +1,6 @@
-from app import db, Grant, app
+from app import app
+from extensions import db
+from models import Grant
 
 from scrapers.crawler import crawl
 from scrapers.parser import extract_content

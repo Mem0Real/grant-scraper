@@ -1,33 +1,13 @@
 from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
 
-import scheduler
+from extensions import db
+from models import Grant
 
 app = Flask(__name__)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 
-db = SQLAlchemy(app)
-
-class Grant(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    title = db.Column(db.String(500))
-
-    url = db.Column(db.String(1000), unique=True)
-
-    summary = db.Column(db.Text)
-
-    relevance = db.Column(db.Integer)
-
-    source = db.Column(db.String(300))
-
-    created_at = db.Column(
-        db.DateTime,
-        default=datetime.utcnow
-    )
+db.init_app(app)
 
 @app.route("/")
 
@@ -47,9 +27,10 @@ def home():
         archive=archive
     )
 
+with app.app_context():
+    db.create_all()
+
+import scheduler
+
 if __name__ == "__main__":
-
-    with app.app_context():
-        db.create_all()
-
     app.run(host="0.0.0.0", port=5000)
