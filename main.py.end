@@ -1,0 +1,59 @@
+import requests
+from bs4 import BeautifulSoup
+import csv
+from datetime import datetime
+
+KEYWORDS = [
+    "grant",
+    "funding",
+    "innovation",
+    "accelerator",
+    "startup",
+    "Africa"
+]
+
+URLS = [
+    "https://vc4a.com",
+    "https://solve.mit.edu",
+]
+
+results = []
+
+headers = {
+    "User-Agent": "Mozilla/5.0"
+}
+
+for url in URLS:
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        text = soup.get_text().lower()
+
+        found_keywords = [
+            kw for kw in KEYWORDS if kw.lower() in text
+        ]
+
+        if found_keywords:
+            results.append({
+                "url": url,
+                "keywords_found": ", ".join(found_keywords),
+                "date": datetime.now().strftime("%Y-%m-%d")
+            })
+
+            print(f"[+] Match found on {url}")
+
+    except Exception as e:
+        print(f"[-] Error scraping {url}: {e}")
+
+with open("africa_grants.csv", "w", newline="", encoding="utf-8") as f:
+    writer = csv.DictWriter(
+        f,
+        fieldnames=["url", "keywords_found", "date"]
+    )
+
+    writer.writeheader()
+    writer.writerows(results)
+
+print("Done.")
