@@ -1,18 +1,13 @@
-from flask import Flask, render_template
+from flask import render_template
 
-from extensions import db
+from create_app import create_app
 from models import Grant
 
-from scraper import run_scraper
 from status import scraping_status
 
 import threading
 
-app = Flask(__name__)
-
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-
-db.init_app(app)
+app = create_app()
 
 @app.route("/")
 
@@ -37,6 +32,8 @@ def home():
 
 def scrape_now():
 
+    from scraper import run_scraper
+
     if not scraping_status["running"]:
 
         thread = threading.Thread(
@@ -49,10 +46,12 @@ def scrape_now():
         "status": "started"
     }
 
-with app.app_context():
-    db.create_all()
-
-import scheduler
-
 if __name__ == "__main__":
+
+    with app.app_context():
+
+        from extensions import db
+
+        db.create_all()
+
     app.run(host="0.0.0.0", port=5000)

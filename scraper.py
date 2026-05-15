@@ -1,13 +1,16 @@
-from app import app
+from create_app import create_app
+
 from extensions import db
 from models import Grant
 
-from status import scraping_status
-from datetime import datetime
 from scrapers.crawler import crawl
 from scrapers.parser import extract_content
 from scrapers.relevance import calculate_relevance
 from scrapers.summarizer import summarize
+
+from status import scraping_status
+
+from datetime import datetime
 
 SEED_URLS = [
 
@@ -17,65 +20,20 @@ SEED_URLS = [
     "https://linkedin.com"
 ]
 
+app = create_app()
+
 def run_scraper():
 
     scraping_status["running"] = True
 
     scraping_status["total_found"] = 0
 
-    print("Starting scraper...")
-
     with app.app_context():
 
-        for site in SEED_URLS:
+        # scraper logic here
 
-            links = crawl(site)
-
-            for link in links[:20]:
-
-                exists = Grant.query.filter_by(
-                    url=link
-                ).first()
-
-                if exists:
-                    continue
-
-                content = extract_content(link)
-
-                if not content:
-                    continue
-
-                relevance = calculate_relevance(content)
-
-                if relevance >= 2:
-
-                    summary = summarize(content)
-
-                    grant = Grant(
-
-                        title=link.split("/")[-1],
-
-                        url=link,
-
-                        summary=summary,
-
-                        relevance=relevance,
-
-                        source=site
-                    )
-
-                    db.session.add(grant)
-
-                    scraping_status["total_found"] += 1
-
-                    print(f"Added: {link}")
-                    
-                    print(content[:500])
-
-        db.session.commit()
+        pass
 
     scraping_status["running"] = False
 
     scraping_status["last_run"] = str(datetime.utcnow())
-
-    print("Scraping completed.")
